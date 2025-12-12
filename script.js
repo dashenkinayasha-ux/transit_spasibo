@@ -11,16 +11,22 @@ document.addEventListener('DOMContentLoaded', () => {
     
     let selectedBackground = ''; 
 
+    // Константы для размеров
+    const PREVIEW_SIZE = 400; // Размер открытки в превью (CSS)
+    const FINAL_SIZE = 2000;  // Целевой размер открытки при скачивании (2000x2000)
+    const SCALE_FACTOR = FINAL_SIZE / PREVIEW_SIZE; // Коэффициент масштабирования (2000/400 = 5)
+
     const backgroundImages = [
-        { id: 'bg1', url: 'backgrounds/bg1.png' }, 
+        { id: 'bg1', url: 'backgrounds/bg1.jpg' }, 
         { id: 'bg2', url: 'backgrounds/bg2.png' }, 
-        { id: 'bg3', url: 'backgrounds/bg3.png' } 
+        { id: 'bg3', url: 'backgrounds/bg3.jpg' },
+        { id: 'bg4', url: 'backgrounds/bg4.jpg' } 
     ];
     
     const textElements = [outputName, outputText];
 
     // =======================================================
-    // ЛОГИКА ВЫБОРА ЦВЕТА (КОЛОРПИКЕР)
+    // ЛОГИКА ВЫБОРА ЦВЕТА
     // =======================================================
     colorPicker.addEventListener('input', () => {
         const selectedColor = colorPicker.value;
@@ -28,7 +34,6 @@ document.addEventListener('DOMContentLoaded', () => {
             el.style.color = selectedColor;
         });
     });
-
 
     // =======================================================
     // ЛОГИКА ВЫБОРА ФОНА
@@ -87,26 +92,38 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // =======================================================
-    // ЛОГИКА СКАЧИВАНИЯ (МАКСИМАЛЬНОЕ КАЧЕСТВО)
+    // ЛОГИКА СКАЧИВАНИЯ (ВЫСОКОЕ КАЧЕСТВО ФОНА)
     // =======================================================
     downloadButton.addEventListener('click', () => {
         downloadButton.style.display = 'none'; 
         
-        // 1. УДАЛЯЕМ рамку и тень ПЕРЕД захватом
+        // Сохраняем оригинальные стили
+        const originalWidth = cardOutput.style.width;
+        const originalHeight = cardOutput.style.height;
+        const originalPadding = cardOutput.style.padding;
+
+        // 1. ИСПРАВЛЕНИЕ: Временно устанавливаем большой физический размер элемента
+        // Это заставит html2canvas захватить фоновое изображение в высоком разрешении.
+        cardOutput.style.width = `${FINAL_SIZE}px`;
+        cardOutput.style.height = `${FINAL_SIZE}px`;
+        cardOutput.style.padding = `${FINAL_SIZE * 0.05}px`; // Пропорциональный padding
+
+        // УДАЛЯЕМ рамку и тень ПЕРЕД захватом
         cardOutput.classList.remove('add-border-shadow');
         
-        // Устанавливаем масштаб 5 для результирующего изображения 2000x2000
-        const scale = 5; 
-
         html2canvas(cardOutput, {
-            scale: scale, 
+            // Масштаб 1, так как мы уже увеличили физический размер элемента
+            scale: 1, 
             allowTaint: true, 
             useCORS: true, 
             logging: false,
             backgroundColor: null 
         }).then(canvas => {
             
-            // 2. ВОЗВРАЩАЕМ рамку и тень СРАЗУ ПОСЛЕ захвата
+            // 2. ВОЗВРАЩАЕМ оригинальные стили
+            cardOutput.style.width = originalWidth;
+            cardOutput.style.height = originalHeight;
+            cardOutput.style.padding = originalPadding;
             cardOutput.classList.add('add-border-shadow'); 
             
             const imageURL = canvas.toDataURL("image/png"); 
@@ -123,7 +140,10 @@ document.addEventListener('DOMContentLoaded', () => {
             downloadButton.style.display = 'block'; 
         }).catch(err => {
             console.error('Ошибка при генерации изображения:', err);
-            alert('Не удалось сгенерировать открытку. Проверьте консоль для деталей.');
+            // Возвращаем оригинальные стили, даже если ошибка
+            cardOutput.style.width = originalWidth;
+            cardOutput.style.height = originalHeight;
+            cardOutput.style.padding = originalPadding;
             cardOutput.classList.add('add-border-shadow'); 
             downloadButton.style.display = 'block';
         });
