@@ -24,6 +24,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Константы для размеров
     const FINAL_SIZE = 2000;  // Целевой размер открытки (для 17x17 см)
+    const DESKTOP_PREVIEW_SIZE = 400; // Базовый размер для расчета масштаба
 
     // БАЗОВЫЕ РАЗМЕРЫ ШРИФТА (из CSS)
     const FONT_SIZE_NAME = 24;
@@ -48,7 +49,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const b = rgb & 0xFF;
         const brightness = (r * 0.299 + g * 0.587 + b * 0.114);
         
-        // Порог яркости для предупреждения
         if (brightness > 160) {
             console.warn('Внимание: Выбран светлый цвет шрифта. Убедитесь, что фон достаточно темный для хорошего контраста.');
         }
@@ -73,7 +73,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // ЛОГИКА ВЫБОРА ФОНА (Рек. 1)
     // =======================================================
     function setupBackgroundSelection() {
-        // РЕК. 1: Fallback-фоны (если нет изображений, или для старта)
         const allBackgrounds = backgroundImages.length > 0 ? backgroundImages : [
             { id: 'color1', color: '#f0f0f0' }, 
             { id: 'color2', color: '#e6f7ff' },
@@ -178,59 +177,75 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // =======================================================
-    // ЛОГИКА СКАЧИВАНИЯ (Рек. 2)
+    // ЛОГИКА СКАЧИВАНИЯ (Обновленный код)
     // =======================================================
     downloadButton.addEventListener('click', () => {
         // РЕК. 2: Индикатор загрузки
         downloadButton.textContent = 'Генерация...';
         downloadButton.disabled = true;
         
-        const PREVIEW_SIZE = cardOutput.clientWidth; 
-        if (PREVIEW_SIZE === 0) {
-            alert('Ошибка: Открытка невидима или имеет нулевой размер.');
-            downloadButton.textContent = 'Скачать открытку';
-            downloadButton.disabled = false;
-            return;
+        const scale = FINAL_SIZE / DESKTOP_PREVIEW_SIZE; // 2000 / 400 = 5
+        
+        // Создаем временный контейнер с фиксированными размерами
+        const tempContainer = document.createElement('div');
+        
+        // Получаем текущие стили фона
+        let backgroundStyle = '';
+        if (cardOutput.style.backgroundImage && cardOutput.style.backgroundImage !== 'none') {
+            backgroundStyle += `background-image: ${cardOutput.style.backgroundImage};`;
+        } else if (cardOutput.style.backgroundColor) {
+            backgroundStyle += `background-color: ${cardOutput.style.backgroundColor};`;
+        } else {
+             // Fallback
+             backgroundStyle += `background-color: #f4f4f9;`;
         }
-        
-        const SCALE_FACTOR = FINAL_SIZE / PREVIEW_SIZE; 
-        
-        // 1. СОХРАНЯЕМ оригинальные стили
-        const originalWidth = cardOutput.style.width;
-        const originalHeight = cardOutput.style.height;
-        const originalPadding = cardOutput.style.padding;
-        const originalNameFontSize = outputName.style.fontSize;
-        const originalTextFontSize = outputText.style.fontSize;
-        
-        const DESKTOP_PADDING_RATIO = 0.05;
 
-        // 2. ВРЕМЕННО УВЕЛИЧИВАЕМ размер элемента (для фона) И шрифт (для текста)
-        cardOutput.style.width = `${FINAL_SIZE}px`;
-        cardOutput.style.height = `${FINAL_SIZE}px`; 
-        cardOutput.style.padding = `${FINAL_SIZE * DESKTOP_PADDING_RATIO}px`; 
-
-        outputName.style.fontSize = `${FONT_SIZE_NAME * SCALE_FACTOR}px`;
-        outputText.style.fontSize = `${FONT_SIZE_TEXT * SCALE_FACTOR}px`;
-
-        // УДАЛЯЕМ рамку и тень ПЕРЕД захватом
-        cardOutput.classList.remove('add-border-shadow');
+        tempContainer.style.cssText = `
+            position: fixed;
+            top: -9999px;
+            left: -9999px;
+            width: ${FINAL_SIZE}px;
+            height: ${FINAL_SIZE}px;
+            background-size: cover;
+            background-position: center;
+            ${backgroundStyle}
+            padding: ${FINAL_SIZE * 0.05}px; /* 5% padding */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            font-family: ${getComputedStyle(cardTextContent).fontFamily};
+        `;
         
-        html2canvas(cardOutput, {
-            scale: 1, 
-            allowTaint: true, 
-            useCORS: true, 
-            logging: false,
-            backgroundColor: null 
+        // Копируем текст
+        const textWrapper = document.createElement('div');
+        textWrapper.style.cssText = `
+            width: 90%; 
+            position: relative;
+            text-align: center;
+        `;
+        
+        const nameClone = outputName.cloneNode(true);
+        const textClone = outputText.cloneNode(true);
+        
+        // Масштабируем шрифты
+        nameClone.style.fontSize = `${FONT_SIZE_NAME * scale}px`;
+        textClone.style.fontSize = `${FONT_SIZE_TEXT * scale}px`;
+        
+        // Добавляем в DOM
+        textWrapper.appendChild(nameClone);
+        textWrapper.appendChild(textClone);
+        tempContainer.appendChild(textWrapper);
+        document.body.appendChild(tempContainer);
+        
+        // Генерируем изображение
+        html2canvas(tempContainer, {
+            width: FINAL_SIZE,
+            height: FINAL_SIZE,
+            scale: 1,
+            useCORS: true,
+            backgroundColor: null
         }).then(canvas => {
-            
-            // 3. ВОЗВРАЩАЕМ оригинальные стили
-            cardOutput.style.width = originalWidth;
-            cardOutput.style.height = originalHeight;
-            cardOutput.style.padding = originalPadding;
-            outputName.style.fontSize = originalNameFontSize; 
-            outputText.style.fontSize = originalTextFontSize;
-            cardOutput.classList.add('add-border-shadow'); 
-            
             const imageURL = canvas.toDataURL("image/png"); 
             const link = document.createElement('a');
             
@@ -242,20 +257,17 @@ document.addEventListener('DOMContentLoaded', () => {
             link.click();
             document.body.removeChild(link);
             
-            // РЕК. 2: Сброс индикатора
+            // Очистка и сброс индикатора
+            document.body.removeChild(tempContainer);
             downloadButton.textContent = 'Скачать открытку';
             downloadButton.disabled = false;
         }).catch(err => {
             console.error('Ошибка при генерации изображения:', err);
-            // Возвращаем оригинальные стили, даже если ошибка
-            cardOutput.style.width = originalWidth;
-            cardOutput.style.height = originalHeight;
-            cardOutput.style.padding = originalPadding;
-            outputName.style.fontSize = originalNameFontSize; 
-            outputText.style.fontSize = originalTextFontSize;
-            cardOutput.classList.add('add-border-shadow'); 
             
-            // РЕК. 2: Сброс индикатора
+            // Очистка и сброс индикатора
+            if (document.body.contains(tempContainer)) {
+                document.body.removeChild(tempContainer);
+            }
             downloadButton.textContent = 'Скачать открытку';
             downloadButton.disabled = false;
         });
