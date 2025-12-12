@@ -204,7 +204,7 @@ select#font-select option[value*="Playfair"] {
 }
 
 /* ======================================================= */
-/* МОБИЛЬНАЯ АДАПТАЦИЯ (Исправлено Рек. 6) */
+/* МОБИЛЬНАЯ АДАПТАЦИЯ */
 /* ======================================================= */
 @media (max-width: 650px) {
     
@@ -228,7 +228,6 @@ select#font-select option[value*="Playfair"] {
     }
 
     .card-text-content {
-        /* РЕК. 6: Восстановлено надежное позиционирование */
         position: relative; 
         z-index: 2;
         transform: none; 
@@ -239,24 +238,26 @@ select#font-select option[value*="Playfair"] {
     }
     
     button {
-        /* Кнопки на полную ширину на мобильном */
-        width: 100%;
-        margin-left: 0;
+        width: auto;
         margin-bottom: 5px;
     }
     
-    /* Дополнительный сброс для размещения кнопок в ряд на мобильном */
-    #reset-form {
-        margin-top: 5px;
-        margin-left: 0;
-    }
-    
-    /* Чтобы кнопки не занимали всю ширину, если их несколько, используем flex для form */
     #card-form button {
         width: auto;
     }
     #card-form {
         display: flex;
         flex-wrap: wrap;
+    }
+    
+    #reset-form {
+        margin-top: 10px;
+        margin-left: 10px;
+    }
+    
+    /* Делаем кнопки на мобильном адаптивными по ширине, чтобы они были рядом */
+    #card-form button {
+        flex-grow: 1;
+        min-width: 100px; /* Чтобы не сжимались слишком сильно */
     }
 }
