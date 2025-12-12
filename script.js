@@ -12,10 +12,9 @@ document.addEventListener('DOMContentLoaded', () => {
     let selectedBackground = ''; 
 
     const backgroundImages = [
-        { id: 'bg1', url: 'backgrounds/bg1.jpg' }, 
+        { id: 'bg1', url: 'backgrounds/bg1.png' }, 
         { id: 'bg2', url: 'backgrounds/bg2.png' }, 
-        { id: 'bg3', url: 'backgrounds/bg3.jpg' },
-        { id: 'bg4', url: 'backgrounds/bg4.jpg' } 
+        { id: 'bg3', url: 'backgrounds/bg3.png' }
     ];
     
     const textElements = [outputName, outputText];
@@ -152,3 +151,4 @@ document.addEventListener('DOMContentLoaded', () => {
     
     downloadButton.style.display = 'none';
 });
+
