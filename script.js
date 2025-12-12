@@ -11,10 +11,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Список фонов (пути относительные для GitHub Pages)
     const backgroundImages = [
-        { id: 'bg1', url: 'backgrounds/bg1.jpg' }, 
+        { id: 'bg1', url: 'backgrounds/bg1.png' }, 
         { id: 'bg2', url: 'backgrounds/bg2.png' }, 
-        { id: 'bg3', url: 'backgrounds/bg3.jpg' },
-        { id: 'bg4', url: 'backgrounds/bg4.jpg' } 
+        { id: 'bg3', url: 'backgrounds/bg3.png' }
         // Если вы добавили новые фоны, перечислите их здесь!
     ];
     
@@ -135,3 +134,4 @@ document.addEventListener('DOMContentLoaded', () => {
     cardOutput.style.fontFamily = fontSelect.options[fontSelect.selectedIndex].dataset.fontCss;
     downloadButton.style.display = 'none';
 });
+
