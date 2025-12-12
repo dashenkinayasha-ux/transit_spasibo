@@ -1,26 +1,15 @@
 document.addEventListener('DOMContentLoaded', () => {
     const cardForm = document.getElementById('card-form');
     const cardOutput = document.getElementById('card-output');
-    // Получаем общий контейнер текста, чтобы шрифт наследовался обоими элементами (п. 1)
     const cardTextContent = cardOutput.querySelector('.card-text-content'); 
     const outputName = document.getElementById('output-name');
     const outputText = document.getElementById('output-text');
     const downloadButton = document.getElementById('download-button');
     const fontSelect = document.getElementById('font-select');
     const backgroundSelection = document.getElementById('background-selection');
-    const colorPalette = document.getElementById('color-palette');
+    const colorPicker = document.getElementById('color-picker'); // 4. Колорпикер
     
     let selectedBackground = ''; 
-    let selectedColor = '#1a1a1a'; 
-
-    const colors = [
-        '#1a1a1a', // Темный
-        '#5cb85c', // Зеленый (Accent)
-        '#ffffff', // Белый
-        '#ff4d4d', // Красный
-        '#337ab7', // Синий
-        '#f0ad4e', // Желтый
-    ];
 
     const backgroundImages = [
         { id: 'bg1', url: 'backgrounds/bg1.jpg' }, 
@@ -32,42 +21,19 @@ document.addEventListener('DOMContentLoaded', () => {
     const textElements = [outputName, outputText];
 
     // =======================================================
-    // ЛОГИКА ВЫБОРА ЦВЕТА (ПАЛИТРА)
+    // ЛОГИКА ВЫБОРА ЦВЕТА (КОЛОРПИКЕР)
     // =======================================================
-    function updateTextColor(color) {
-        selectedColor = color;
+    // 3. УДАЛЕНО: старые функции updateTextColor и setupColorPalette
+    
+    // Новая логика для color picker
+    colorPicker.addEventListener('input', () => {
+        const selectedColor = colorPicker.value;
         textElements.forEach(el => {
-            el.style.color = color;
-            
-            // Усиление контраста
-            if (color === '#ffffff') {
-                el.style.textShadow = '0 0 5px rgba(0, 0, 0, 0.9), 0 0 8px rgba(0, 0, 0, 0.6)'; 
-            } else {
-                el.style.textShadow = '0 0 5px rgba(255, 255, 255, 0.9), 0 0 8px rgba(255, 255, 255, 0.6)'; 
-            }
+            el.style.color = selectedColor;
+            // 3. УДАЛЕНО: Логика text-shadow
         });
-    }
+    });
 
-    function setupColorPalette() {
-        colors.forEach((color, index) => {
-            const div = document.createElement('div');
-            div.className = 'color-option';
-            div.style.backgroundColor = color;
-            div.dataset.color = color;
-
-            if (index === 0) {
-                div.classList.add('selected');
-                updateTextColor(color);
-            }
-
-            div.addEventListener('click', () => {
-                document.querySelectorAll('.color-option').forEach(opt => opt.classList.remove('selected'));
-                div.classList.add('selected');
-                updateTextColor(color);
-            });
-            colorPalette.appendChild(div);
-        });
-    }
 
     // =======================================================
     // ЛОГИКА ВЫБОРА ФОНА
@@ -107,7 +73,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // =======================================================
     fontSelect.addEventListener('change', () => {
         const fontCss = fontSelect.value;
-        // Применяем шрифт к card-text-content, чтобы он наследовался обоими p-элементами
         cardTextContent.style.fontFamily = fontCss; 
     });
 
@@ -120,14 +85,17 @@ document.addEventListener('DOMContentLoaded', () => {
         const recipientName = document.getElementById('recipient-name').value;
         const gratitudeText = document.getElementById('gratitude-text').value;
 
-        outputName.textContent = recipientName.trim() || 'Имя получателя';
-        outputText.textContent = gratitudeText.trim() || 'Текст благодарности';
+        // 1. ИСПРАВЛЕНИЕ: Регистр имени сохраняется
+        outputName.textContent = recipientName.trim() || 'Имя получателя'; 
+        
+        // 2. ИСПРАВЛЕНИЕ: Текст благодарности без курсива
+        outputText.textContent = gratitudeText.trim() || 'Текст благодарности'; 
         
         downloadButton.style.display = 'block';
     });
 
     // =======================================================
-    // ЛОГИКА СКАЧИВАНИЯ (п. 3, п. 4)
+    // ЛОГИКА СКАЧИВАНИЯ (п. 5 - Высокое Разрешение)
     // =======================================================
     downloadButton.addEventListener('click', () => {
         downloadButton.style.display = 'none'; 
@@ -135,12 +103,16 @@ document.addEventListener('DOMContentLoaded', () => {
         // 1. УДАЛЯЕМ рамку и тень ПЕРЕД захватом
         cardOutput.classList.remove('add-border-shadow');
         
+        // Целевое разрешение 1200x1200. Поскольку превью 400x400,
+        // нам нужен масштаб 1200/400 = 3.
+        const scale = 3; 
+
         html2canvas(cardOutput, {
-            scale: 3, // УВЕЛИЧЕННЫЙ МАСШТАБ ДЛЯ ЛУЧШЕГО КАЧЕСТВА (п. 4)
+            scale: scale, // 5. Устанавливаем масштаб 3 для разрешения 1200x1200
             allowTaint: true, 
             useCORS: true, 
             logging: false,
-            backgroundColor: null // Гарантируем отсутствие лишнего фона
+            backgroundColor: null 
         }).then(canvas => {
             
             // 2. ВОЗВРАЩАЕМ рамку и тень СРАЗУ ПОСЛЕ захвата
@@ -168,11 +140,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Инициализация при загрузке страницы
     setupBackgroundSelection();
-    setupColorPalette(); 
     
     // Применяем стили по умолчанию
     cardOutput.classList.add('add-border-shadow'); 
     cardTextContent.style.fontFamily = fontSelect.value;
+    
+    // Применяем цвет по умолчанию из колорпикера
+    textElements.forEach(el => {
+        el.style.color = colorPicker.value;
+    });
     
     downloadButton.style.display = 'none';
 });
