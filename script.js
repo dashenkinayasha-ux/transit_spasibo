@@ -7,10 +7,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // !!! ВАЖНО: Добавлен слеш в начале пути (/) для корректной работы на GitHub Pages (п. 7) !!!
     const backgroundImages = [
-        '/backgrounds/bg1.jpg', 
+        '/backgrounds/bg1.png', 
         '/backgrounds/bg2.png', 
-        '/backgrounds/bg3.jpg',
-        '/backgrounds/bg4.jpg' 
+        '/backgrounds/bg3.png',
+        '/backgrounds/bg4.png' 
         // Убедитесь, что все ваши файлы перечислены здесь!
     ];
 
@@ -80,3 +80,4 @@ document.addEventListener('DOMContentLoaded', () => {
     cardOutput.style.backgroundImage = `url(${getRandomBackground()})`;
     downloadButton.style.display = 'none';
 });
+
