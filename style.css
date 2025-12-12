@@ -173,41 +173,36 @@ button:hover {
 }
 
 /* ======================================================= */
-/* МОБИЛЬНАЯ АДАПТАЦИЯ (Исправление №1 и №2) */
+/* МОБИЛЬНАЯ АДАПТАЦИЯ (Исправление обрезки) */
 /* ======================================================= */
 @media (max-width: 650px) {
     
     .container {
-        padding: 10px; /* Уменьшаем padding контейнера */
+        padding: 10px; 
         box-shadow: none; 
     }
 
     .postcard {
-        /* Делаем открытку отзывчивой и гарантируем квадрат 1:1 */
-        width: 90%; /* Окно открытки не выходит за рамки */
+        /* *** ИСПРАВЛЕНИЕ: Гарантируем квадратную форму с помощью aspect-ratio *** */
+        width: 90%; 
+        height: auto; 
+        aspect-ratio: 1 / 1; 
         max-width: 400px;
-        height: 0; /* Устанавливаем высоту 0 для трюка с padding-bottom */
-        padding-bottom: 90%; /* Гарантирует квадратную форму (90% от ширины контейнера) */
-        margin-left: auto;
-        margin-right: auto;
-    }
-
-    /* Необходимо сбросить flex-контейнер и абсолютно позиционировать текст */
-    .postcard {
-        display: block; 
-    }
-    
-    .card-text-content {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%); /* Центрирование */
-        width: 90%;
-        height: 90%;
+        margin: 20px auto;
+        
+        /* Возвращаемся к надежному flex-центрированию */
         display: flex;
         flex-direction: column;
-        justify-content: center;
-        align-items: center;
+        justify-content: center; 
+        align-items: center; 
+        padding: 15px; /* Немного уменьшаем отступы на маленьких экранах */
+    }
+
+    /* Возвращаем относительное позиционирование, т.к. родитель - flex */
+    .card-text-content {
+        position: static;
+        transform: none;
+        width: 100%; /* Занимает всю доступную ширину */
         padding: 0;
     }
 }
