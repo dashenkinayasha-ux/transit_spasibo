@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let selectedBackground = ''; 
 
     // Константы для размеров
-    const FINAL_SIZE = 2000;  // *** ИЗМЕНЕНО: Целевой размер открытки (17x17 см при 300 DPI) ***
+    const FINAL_SIZE = 2000;  // Целевой размер открытки (для 17x17 см)
 
     // БАЗОВЫЕ РАЗМЕРЫ ШРИФТА (из CSS)
     const FONT_SIZE_NAME = 24;
@@ -26,8 +26,9 @@ document.addEventListener('DOMContentLoaded', () => {
     
     const textElements = [outputName, outputText];
 
-    // ... (Логика выбора цвета, фона, шрифта без изменений) ...
-    
+    // =======================================================
+    // ЛОГИКА ВЫБОРА ЦВЕТА
+    // =======================================================
     colorPicker.addEventListener('input', () => {
         const selectedColor = colorPicker.value;
         textElements.forEach(el => {
@@ -35,6 +36,9 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
+    // =======================================================
+    // ЛОГИКА ВЫБОРА ФОНА
+    // =======================================================
     function setupBackgroundSelection() {
         if (backgroundImages.length === 0) {
             console.warn("Нет доступных фоновых изображений.");
@@ -65,11 +69,17 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // =======================================================
+    // ЛОГИКА ВЫБОРА ШРИФТА
+    // =======================================================
     fontSelect.addEventListener('change', () => {
         const fontCss = fontSelect.value;
         cardTextContent.style.fontFamily = fontCss; 
     });
 
+    // =======================================================
+    // ГЛАВНЫЙ ОБРАБОТЧИК ФОРМЫ
+    // =======================================================
     cardForm.addEventListener('submit', (e) => {
         e.preventDefault(); 
 
@@ -82,14 +92,13 @@ document.addEventListener('DOMContentLoaded', () => {
         downloadButton.style.display = 'block';
     });
 
-
     // =======================================================
     // ЛОГИКА СКАЧИВАНИЯ (Исправление динамического размера и масштаба)
     // =======================================================
     downloadButton.addEventListener('click', () => {
         downloadButton.style.display = 'none'; 
         
-        // *** ИСПРАВЛЕНИЕ 1: Динамически получаем текущий размер превью ***
+        // 1. Динамически получаем текущий размер превью. 
         const PREVIEW_SIZE = cardOutput.clientWidth; 
         if (PREVIEW_SIZE === 0) {
             alert('Ошибка: Открытка невидима или имеет нулевой размер.');
@@ -103,15 +112,19 @@ document.addEventListener('DOMContentLoaded', () => {
         const originalWidth = cardOutput.style.width;
         const originalHeight = cardOutput.style.height;
         const originalPadding = cardOutput.style.padding;
-        const originalPaddingBottom = cardOutput.style.paddingBottom;
         const originalNameFontSize = outputName.style.fontSize;
         const originalTextFontSize = outputText.style.fontSize;
+        
+        // В CSS у нас есть padding: 20px для десктопа. 
+        // 20px / 400px (desktop size) = 0.05
+        const DESKTOP_PADDING_RATIO = 0.05;
 
         // 2. ВРЕМЕННО УВЕЛИЧИВАЕМ размер элемента (для фона) И шрифт (для текста)
         cardOutput.style.width = `${FINAL_SIZE}px`;
-        cardOutput.style.height = `${FINAL_SIZE}px`;
-        cardOutput.style.padding = `${PREVIEW_SIZE * 0.05 * SCALE_FACTOR}px`; 
-        cardOutput.style.paddingBottom = originalPaddingBottom; // Сбрасываем трюк с padding-bottom
+        cardOutput.style.height = `${FINAL_SIZE}px`; 
+        
+        // Устанавливаем новый padding: 5% от нового размера (2000 * 0.05 = 100px)
+        cardOutput.style.padding = `${FINAL_SIZE * DESKTOP_PADDING_RATIO}px`; 
 
         // Увеличение размера шрифта для сохранения масштаба
         outputName.style.fontSize = `${FONT_SIZE_NAME * SCALE_FACTOR}px`;
@@ -132,7 +145,6 @@ document.addEventListener('DOMContentLoaded', () => {
             cardOutput.style.width = originalWidth;
             cardOutput.style.height = originalHeight;
             cardOutput.style.padding = originalPadding;
-            cardOutput.style.paddingBottom = originalPaddingBottom;
             outputName.style.fontSize = originalNameFontSize; 
             outputText.style.fontSize = originalTextFontSize;
             cardOutput.classList.add('add-border-shadow'); 
@@ -155,7 +167,6 @@ document.addEventListener('DOMContentLoaded', () => {
             cardOutput.style.width = originalWidth;
             cardOutput.style.height = originalHeight;
             cardOutput.style.padding = originalPadding;
-            cardOutput.style.paddingBottom = originalPaddingBottom;
             outputName.style.fontSize = originalNameFontSize; 
             outputText.style.fontSize = originalTextFontSize;
             cardOutput.classList.add('add-border-shadow'); 
