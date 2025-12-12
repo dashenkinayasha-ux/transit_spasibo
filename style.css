@@ -78,7 +78,6 @@ button:hover {
 }
 
 .postcard {
-    /* Размеры по умолчанию для ПРЕВЬЮ */
     width: 400px;
     height: 400px; 
     
@@ -121,7 +120,6 @@ button:hover {
     color: #1a1a1a; 
 }
 
-/* Базовые размеры шрифтов (для превью и для расчета масштабирования) */
 .recipient-name-output {
     font-size: 24px;
 }
