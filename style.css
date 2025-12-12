@@ -16,7 +16,6 @@ body {
     width: 100%;
 }
 
-/* 2. ИСПРАВЛЕНИЕ: Центрирование заголовка */
 h1#main-title {
     text-align: center;
 }
@@ -79,9 +78,9 @@ button:hover {
 }
 
 .postcard {
-    /* 1. ИСПРАВЛЕНИЕ: Убираем фиксированный размер, чтобы менять его в JS для высокого качества */
-    /* width: 400px;
-    height: 400px; */ 
+    /* Размеры по умолчанию для ПРЕВЬЮ */
+    width: 400px;
+    height: 400px; 
     
     margin: 20px auto;
     border-radius: 10px;
@@ -95,10 +94,6 @@ button:hover {
     position: relative;
     overflow: hidden;
     transition: all 0.3s;
-    
-    /* Устанавливаем размер по умолчанию для превью */
-    width: 400px;
-    height: 400px;
 }
 
 /* Класс для отображения рамки в превью */
@@ -126,6 +121,7 @@ button:hover {
     color: #1a1a1a; 
 }
 
+/* Базовые размеры шрифтов (для превью и для расчета масштабирования) */
 .recipient-name-output {
     font-size: 24px;
 }
