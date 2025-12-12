@@ -22,7 +22,8 @@
             <input type="text" id="recipient-name" required placeholder="Например: Иван">
 
             <label for="gratitude-text">Текст благодарности:</label>
-            <textarea id="gratitude-text" required placeholder="Напишите, за что вы признательны и благодарны..."></textarea>
+            <textarea id="gratitude-text" required placeholder="Напишите, за что вы признательны и благодарны..." maxlength="500"></textarea>
+            <small id="char-count">0/500</small>
             
             <label for="font-select">Шрифт открытки:</label>
             <select id="font-select">
@@ -39,6 +40,7 @@
                 </div>
 
             <button type="submit">Сгенерировать Открытку</button>
+            <button type="button" id="reset-form">Очистить форму</button> 
         </form>
 
         <div id="card-preview">
