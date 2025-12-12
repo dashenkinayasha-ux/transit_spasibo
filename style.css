@@ -70,7 +70,7 @@ button:hover {
     background-size: cover;
     background-position: center;
     padding: 20px;
-    /* Центрирование контента внутри открытки (п. 3) */
+    /* Центрирование контента внутри открытки */
     display: flex;
     flex-direction: column;
     justify-content: center; 
@@ -88,7 +88,8 @@ button:hover {
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: rgba(255, 255, 255, 0.4); 
+    /* Добавляем немного больше прозрачности для светлых фонов */
+    background-color: rgba(255, 255, 255, 0.5); 
     z-index: 1; 
 }
 
@@ -97,18 +98,19 @@ button:hover {
     position: relative; 
     z-index: 2;
     text-align: center;
-    width: 90%; /* Ограничиваем ширину для центрирования */
+    width: 90%; 
     padding: 10px;
 }
 
-/* Стили для выводимого текста (п. 3) */
+/* Стили для выводимого текста */
 .recipient-name-output,
 .gratitude-text-output {
     text-align: center !important; 
     margin: 10px 0;
     font-weight: bold;
     color: #1a1a1a; 
-    text-shadow: 1px 1px 3px rgba(255, 255, 255, 1); /* Улучшенный контраст */
+    /* Мощная белая тень для контраста на любом фоне */
+    text-shadow: 1px 1px 4px rgba(255, 255, 255, 1); 
     line-height: 1.3;
 }
 
