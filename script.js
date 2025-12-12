@@ -1,18 +1,17 @@
 document.addEventListener('DOMContentLoaded', () => {
     const cardForm = document.getElementById('card-form');
     const cardOutput = document.getElementById('card-output');
-    const cardTextContent = cardOutput.querySelector('.card-text-content'); // Новый элемент для шрифта
+    const cardTextContent = cardOutput.querySelector('.card-text-content'); 
     const outputName = document.getElementById('output-name');
     const outputText = document.getElementById('output-text');
     const downloadButton = document.getElementById('download-button');
     const fontSelect = document.getElementById('font-select');
     const backgroundSelection = document.getElementById('background-selection');
-    const colorPalette = document.getElementById('color-palette'); // Новый элемент
+    const colorPalette = document.getElementById('color-palette');
     
     let selectedBackground = ''; 
-    let selectedColor = '#1a1a1a'; // Цвет по умолчанию
+    let selectedColor = '#1a1a1a'; 
 
-    // Список доступных цветов
     const colors = [
         '#1a1a1a', // Темный
         '#5cb85c', // Зеленый (Accent)
@@ -22,28 +21,29 @@ document.addEventListener('DOMContentLoaded', () => {
         '#f0ad4e', // Желтый
     ];
 
-    // Список фонов
     const backgroundImages = [
         { id: 'bg1', url: 'backgrounds/bg1.png' }, 
         { id: 'bg2', url: 'backgrounds/bg2.png' }, 
         { id: 'bg3', url: 'backgrounds/bg3.png' } 
-        // Добавьте больше фонов, если нужно
     ];
     
     const textElements = [outputName, outputText];
 
     // =======================================================
-    // ЛОГИКА ВЫБОРА ЦВЕТА (ПАЛИТРА)
+    // ЛОГИКА ВЫБОРА ЦВЕТА (ПАЛИТРА) И КОНТРАСТА
     // =======================================================
     function updateTextColor(color) {
         selectedColor = color;
         textElements.forEach(el => {
             el.style.color = color;
-            // Обновляем тень для контраста
+            
+            // УСИЛЕНИЕ КОНТРАСТА (без оверлея)
             if (color === '#ffffff') {
-                el.style.textShadow = '1px 1px 4px rgba(0, 0, 0, 0.8)'; // Темная тень для светлого текста
+                // Очень сильная черная тень для белого текста на любом фоне
+                el.style.textShadow = '0 0 5px rgba(0, 0, 0, 0.9), 0 0 8px rgba(0, 0, 0, 0.6)'; 
             } else {
-                el.style.textShadow = '1px 1px 4px rgba(255, 255, 255, 1)'; // Светлая тень для темного текста
+                // Сильная белая тень для темного текста на ярком фоне
+                el.style.textShadow = '0 0 5px rgba(255, 255, 255, 0.9), 0 0 8px rgba(255, 255, 255, 0.6)'; 
             }
         });
     }
@@ -103,11 +103,10 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // =======================================================
-    // ЛОГИКА ВЫБОРА ШРИФТА (ИСПРАВЛЕНИЕ: ПРИМЕНЕНИЕ К РОДИТЕЛЮ)
+    // ЛОГИКА ВЫБОРА ШРИФТА
     // =======================================================
     fontSelect.addEventListener('change', () => {
         const fontCss = fontSelect.value;
-        // Применяем шрифт к контейнеру card-text-content, чтобы оба элемента наследовали его
         cardTextContent.style.fontFamily = fontCss; 
     });
 
@@ -127,12 +126,12 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // =======================================================
-    // ЛОГИКА СКАЧИВАНИЯ (КРИТИЧЕСКОЕ ИСПРАВЛЕНИЕ РАМКИ)
+    // ЛОГИКА СКАЧИВАНИЯ (ФИНАЛЬНОЕ ИСПРАВЛЕНИЕ РАМКИ)
     // =======================================================
     downloadButton.addEventListener('click', () => {
         downloadButton.style.display = 'none'; 
         
-        // 1. ИСПРАВЛЕНИЕ: Удаляем рамку и тень ПЕРЕД захватом
+        // 1. УДАЛЯЕМ рамку и тень ПЕРЕД захватом
         cardOutput.classList.remove('add-border-shadow');
         
         html2canvas(cardOutput, {
@@ -143,7 +142,7 @@ document.addEventListener('DOMContentLoaded', () => {
             backgroundColor: null 
         }).then(canvas => {
             
-            // 2. ИСПРАВЛЕНИЕ: Возвращаем рамку и тень СРАЗУ ПОСЛЕ захвата
+            // 2. ВОЗВРАЩАЕМ рамку и тень СРАЗУ ПОСЛЕ захвата
             cardOutput.classList.add('add-border-shadow'); 
             
             const imageURL = canvas.toDataURL("image/png"); 
@@ -161,7 +160,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }).catch(err => {
             console.error('Ошибка при генерации изображения:', err);
             alert('Не удалось сгенерировать открытку. Проверьте консоль для деталей.');
-            // 3. ИСПРАВЛЕНИЕ: Возвращаем рамку, даже если произошла ошибка
             cardOutput.classList.add('add-border-shadow'); 
             downloadButton.style.display = 'block';
         });
@@ -169,7 +167,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Инициализация при загрузке страницы
     setupBackgroundSelection();
-    setupColorPalette(); // Настраиваем палитру
+    setupColorPalette(); 
     
     // Применяем стили по умолчанию
     cardOutput.classList.add('add-border-shadow'); 
@@ -177,4 +175,3 @@ document.addEventListener('DOMContentLoaded', () => {
     
     downloadButton.style.display = 'none';
 });
-
