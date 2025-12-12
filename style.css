@@ -14,6 +14,8 @@ body {
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
     max-width: 600px;
     width: 100%;
+    /* ДОБАВЛЕНО: Предотвращает горизонтальный скролл на мобильных */
+    overflow-x: hidden; 
 }
 
 h1#main-title {
@@ -142,6 +144,9 @@ select#font-select option[value*="Playfair"] {
     position: relative;
     overflow: hidden;
     transition: all 0.3s;
+    
+    /* ДОБАВЛЕНО: Важно для правильного расчета размеров */
+    box-sizing: border-box !important; 
 }
 
 /* Класс для отображения рамки в превью */
@@ -204,13 +209,14 @@ select#font-select option[value*="Playfair"] {
 }
 
 /* ======================================================= */
-/* МОБИЛЬНАЯ АДАПТАЦИЯ */
+/* МОБИЛЬНАЯ АДАПТАЦИЯ (Скорректировано) */
 /* ======================================================= */
 @media (max-width: 650px) {
     
     .container {
         padding: 10px; 
         box-shadow: none; 
+        overflow-x: hidden; /* Уже добавлено выше, но пусть будет */
     }
 
     .postcard {
@@ -225,6 +231,11 @@ select#font-select option[value*="Playfair"] {
         justify-content: center; 
         align-items: center; 
         padding: 15px;
+        
+        /* ДОБАВЛЕНО: Гарантируем, что элемент не выходит за границы */
+        max-width: calc(100vw - 40px) !important;
+        margin-left: auto;
+        margin-right: auto;
     }
 
     .card-text-content {
