@@ -1,0 +1,123 @@
+body {
+    font-family: sans-serif;
+    background-color: #f4f4f9;
+    color: #333;
+    display: flex;
+    justify-content: center;
+    padding: 20px;
+}
+
+.container {
+    background: #fff;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    max-width: 600px;
+    width: 100%;
+}
+
+/* Форма */
+label {
+    display: block;
+    margin-top: 15px;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+input[type="text"],
+textarea {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box; /* Важно для правильной ширины */
+}
+
+textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+button {
+    background-color: #5cb85c;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    margin-top: 10px;
+    transition: background-color 0.3s;
+}
+
+button:hover {
+    background-color: #4cae4c;
+}
+
+/* Открытка - Квадратный формат и стили */
+#card-preview {
+    margin-top: 30px;
+    text-align: center;
+}
+
+.postcard {
+    width: 400px; /* Задаем квадратный размер */
+    height: 400px;
+    margin: 20px auto;
+    border: 2px solid #5cb85c;
+    border-radius: 10px;
+    background-size: cover; /* Фоновое изображение будет покрывать всю область */
+    background-position: center;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; /* Расположить текст сверху и снизу */
+    position: relative; /* Для позиционирования текста */
+    overflow: hidden; /* Скрываем возможное переполнение */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+.postcard::before {
+    /* Полупрозрачный оверлей для обеспечения читаемости текста */
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(255, 255, 255, 0.4); /* Светлый полупрозрачный фон */
+    z-index: 1; /* Под текстом, но над фоном */
+}
+
+.postcard p {
+    position: relative; /* Чтобы текст был над оверлеем */
+    z-index: 2;
+    text-align: left;
+    margin: 0;
+    padding: 5px 0;
+    font-size: 18px;
+    color: #333; /* Темный цвет для текста */
+    text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.8); /* Легкая тень для контраста */
+}
+
+#output-text {
+    flex-grow: 1; /* Текст благодарности занимает центральное место */
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-style: italic;
+    font-size: 20px;
+    line-height: 1.4;
+}
+
+.to-text {
+    font-weight: bold;
+}
+
+.from-text {
+    text-align: right !important;
+    font-weight: bold;
+    font-style: normal;
+}
