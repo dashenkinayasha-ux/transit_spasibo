@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let selectedBackground = ''; 
 
     // Константы для размеров
-    const FINAL_SIZE = 2000;  // Целевой размер открытки (для 17x17 см)
+    const FINAL_SIZE = 1800;  // *** ИЗМЕНЕНО: Целевой размер открытки (1800x1800 px) ***
     const DESKTOP_PREVIEW_SIZE = 400; // Базовый размер для расчета масштаба
 
     // БАЗОВЫЕ РАЗМЕРЫ ШРИФТА (из CSS)
@@ -172,7 +172,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         
         // Сброс счетчика
-        charCount.textContent = `0/${gratitudeTextarea.maxLength}`;
+        charCount.textContent = `${gratitudeTextarea.value.length}/${gratitudeTextarea.maxLength}`;
     });
 
     // =======================================================
@@ -183,7 +183,7 @@ document.addEventListener('DOMContentLoaded', () => {
         downloadButton.textContent = 'Генерация...';
         downloadButton.disabled = true;
         
-        const scale = FINAL_SIZE / DESKTOP_PREVIEW_SIZE; // 2000 / 400 = 5
+        const scale = FINAL_SIZE / DESKTOP_PREVIEW_SIZE; // 1800 / 400 = 4.5
         
         // Создаем временный контейнер с фиксированными размерами
         const tempContainer = document.createElement('div');
@@ -293,4 +293,3 @@ document.addEventListener('DOMContentLoaded', () => {
     
     downloadButton.style.display = 'none';
 });
-
