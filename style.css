@@ -1,5 +1,6 @@
+/* 1. ШРИФТ ДЛЯ ИНТЕРФЕЙСА (Exo 2) */
 body {
-    font-family: sans-serif;
+    font-family: 'Exo 2', sans-serif; 
     background-color: #f4f4f9;
     color: #333;
     display: flex;
@@ -25,7 +26,8 @@ label {
 }
 
 input[type="text"],
-textarea {
+textarea,
+select { /* Стиль для поля выбора шрифта */
     width: 100%;
     padding: 10px;
     margin-bottom: 10px;
@@ -65,35 +67,43 @@ button:hover {
     width: 400px;
     height: 400px;
     margin: 20px auto;
-    border: 2px solid #5cb85c;
+    /* Рамка, которая будет удалена перед скачиванием */
+    border: 2px solid #5cb85c; 
     border-radius: 10px;
     background-size: cover;
     background-position: center;
     padding: 20px;
-    /* Центрирование контента внутри открытки */
     display: flex;
     flex-direction: column;
     justify-content: center; 
     align-items: center; 
     position: relative;
     overflow: hidden;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2); 
+    /* Шрифт по умолчанию (меняется через JS) */
+    font-family: 'Exo 2', sans-serif;
+    transition: font-family 0.3s;
+}
+
+/* 2. ИСПРАВЛЕНИЕ: Класс для удаления рамки и тени на время скачивания */
+.no-border-shadow {
+    border: none !important;
+    box-shadow: none !important;
 }
 
 .postcard::before {
-    /* Полупрозрачный оверлей для обеспечения читаемости текста */
+    /* Полупрозрачный оверлей */
     content: '';
     position: absolute;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
-    /* Добавляем немного больше прозрачности для светлых фонов */
-    background-color: rgba(255, 255, 255, 0.5); 
+    /* ИСПРАВЛЕНИЕ: Менее заметный оверлей для более яркого фона */
+    background-color: rgba(255, 255, 255, 0.3); 
     z-index: 1; 
 }
 
-/* Контейнер для текста, чтобы центрировать его как блок */
 .card-text-content {
     position: relative; 
     z-index: 2;
@@ -102,14 +112,13 @@ button:hover {
     padding: 10px;
 }
 
-/* Стили для выводимого текста */
+/* Стили для выводимого текста (используют выбранный шрифт) */
 .recipient-name-output,
 .gratitude-text-output {
     text-align: center !important; 
     margin: 10px 0;
     font-weight: bold;
     color: #1a1a1a; 
-    /* Мощная белая тень для контраста на любом фоне */
     text-shadow: 1px 1px 4px rgba(255, 255, 255, 1); 
     line-height: 1.3;
 }
@@ -122,5 +131,32 @@ button:hover {
 .gratitude-text-output {
     font-size: 20px;
     font-style: italic;
-    white-space: pre-wrap; /* Сохраняет переносы строк из textarea */
+    white-space: pre-wrap; 
+}
+
+/* СТИЛИ ДЛЯ ВЫБОРА ФОНА */
+.background-selection {
+    display: flex;
+    flex-wrap: wrap; /* Позволяет переносить на новую строку */
+    gap: 10px;
+    margin-bottom: 20px;
+    overflow-x: auto;
+    padding-bottom: 5px; 
+}
+
+.bg-option {
+    position: relative;
+    width: 60px;
+    height: 60px;
+    border: 3px solid transparent;
+    border-radius: 5px;
+    cursor: pointer;
+    background-size: cover;
+    background-position: center;
+    transition: border-color 0.2s;
+    flex-shrink: 0; /* Чтобы не сжимались при наличии скролла */
+}
+
+.bg-option.selected {
+    border-color: #5cb85c; /* Зеленая рамка для выбранного фона */
 }
