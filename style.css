@@ -1,4 +1,3 @@
-/* 3. ШРИФТ ДЛЯ ИНТЕРФЕЙСА (Exo 2) */
 body {
     font-family: 'Exo 2', sans-serif; 
     background-color: #f4f4f9;
@@ -86,17 +85,7 @@ button:hover {
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.2); 
 }
 
-.postcard::before {
-    /* Полупрозрачный оверлей */
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(255, 255, 255, 0.3); 
-    z-index: 1; 
-}
+/* !!! УДАЛЕНО: УДАЛЕН ПСЕВДОЭЛЕМЕНТ .postcard::before (Оверлей) !!! */
 
 .card-text-content {
     position: relative; 
@@ -104,7 +93,6 @@ button:hover {
     text-align: center;
     width: 90%; 
     padding: 10px;
-    /* Устанавливаем шрифт по умолчанию здесь для наследования */
     font-family: 'Exo 2', sans-serif;
 }
 
@@ -133,6 +121,7 @@ button:hover {
     display: flex;
     gap: 15px;
     margin: 10px 0 20px 0;
+    flex-wrap: wrap; /* Позволяет кружкам переноситься */
 }
 
 .color-option {
@@ -140,7 +129,8 @@ button:hover {
     height: 30px;
     border-radius: 50%;
     cursor: pointer;
-    border: 2px solid transparent;
+    /* ИСПРАВЛЕНИЕ UX: Добавлена тонкая граница, чтобы белый цвет был виден */
+    border: 2px solid #ccc; 
     transition: transform 0.2s, border-color 0.2s;
 }
 
@@ -149,17 +139,18 @@ button:hover {
 }
 
 .color-option.selected {
-    border-color: #5cb85c; /* Зеленая рамка для выбранного цвета */
+    border-color: #5cb85c; 
+    border-width: 4px; /* Увеличиваем толщину выделения */
     transform: scale(1.1);
 }
 
-/* СТИЛИ ДЛЯ ВЫБОРА ФОНА */
+/* СТИЛИ ДЛЯ ВЫБОРА ФОНА (УСТРАНЕНИЕ СКРОЛЛА) */
 .background-selection {
     display: flex;
-    flex-wrap: wrap; 
+    flex-wrap: wrap; /* ИСПРАВЛЕНИЕ: Перенос на новую строку */
     gap: 10px;
     margin-bottom: 20px;
-    overflow-x: auto;
+    /* УДАЛЕНО: overflow-x: auto; */
     padding-bottom: 5px; 
 }
 
@@ -173,7 +164,7 @@ button:hover {
     background-size: cover;
     background-position: center;
     transition: border-color 0.2s;
-    flex-shrink: 0; 
+    /* УДАЛЕНО: flex-shrink: 0; */
 }
 
 .bg-option.selected {
