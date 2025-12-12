@@ -1,6 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
     const cardForm = document.getElementById('card-form');
     const cardOutput = document.getElementById('card-output');
+    // Получаем общий контейнер текста, чтобы шрифт наследовался обоими элементами (п. 1)
     const cardTextContent = cardOutput.querySelector('.card-text-content'); 
     const outputName = document.getElementById('output-name');
     const outputText = document.getElementById('output-text');
@@ -22,27 +23,26 @@ document.addEventListener('DOMContentLoaded', () => {
     ];
 
     const backgroundImages = [
-        { id: 'bg1', url: 'backgrounds/bg1.png' }, 
+        { id: 'bg1', url: 'backgrounds/bg1.jpg' }, 
         { id: 'bg2', url: 'backgrounds/bg2.png' }, 
-        { id: 'bg3', url: 'backgrounds/bg3.png' } 
+        { id: 'bg3', url: 'backgrounds/bg3.jpg' },
+        { id: 'bg4', url: 'backgrounds/bg4.jpg' } 
     ];
     
     const textElements = [outputName, outputText];
 
     // =======================================================
-    // ЛОГИКА ВЫБОРА ЦВЕТА (ПАЛИТРА) И КОНТРАСТА
+    // ЛОГИКА ВЫБОРА ЦВЕТА (ПАЛИТРА)
     // =======================================================
     function updateTextColor(color) {
         selectedColor = color;
         textElements.forEach(el => {
             el.style.color = color;
             
-            // УСИЛЕНИЕ КОНТРАСТА (без оверлея)
+            // Усиление контраста
             if (color === '#ffffff') {
-                // Очень сильная черная тень для белого текста на любом фоне
                 el.style.textShadow = '0 0 5px rgba(0, 0, 0, 0.9), 0 0 8px rgba(0, 0, 0, 0.6)'; 
             } else {
-                // Сильная белая тень для темного текста на ярком фоне
                 el.style.textShadow = '0 0 5px rgba(255, 255, 255, 0.9), 0 0 8px rgba(255, 255, 255, 0.6)'; 
             }
         });
@@ -103,10 +103,11 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // =======================================================
-    // ЛОГИКА ВЫБОРА ШРИФТА
+    // ЛОГИКА ВЫБОРА ШРИФТА (п. 1)
     // =======================================================
     fontSelect.addEventListener('change', () => {
         const fontCss = fontSelect.value;
+        // Применяем шрифт к card-text-content, чтобы он наследовался обоими p-элементами
         cardTextContent.style.fontFamily = fontCss; 
     });
 
@@ -126,7 +127,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // =======================================================
-    // ЛОГИКА СКАЧИВАНИЯ (ФИНАЛЬНОЕ ИСПРАВЛЕНИЕ РАМКИ)
+    // ЛОГИКА СКАЧИВАНИЯ (п. 3, п. 4)
     // =======================================================
     downloadButton.addEventListener('click', () => {
         downloadButton.style.display = 'none'; 
@@ -135,11 +136,11 @@ document.addEventListener('DOMContentLoaded', () => {
         cardOutput.classList.remove('add-border-shadow');
         
         html2canvas(cardOutput, {
-            scale: 2, 
+            scale: 3, // УВЕЛИЧЕННЫЙ МАСШТАБ ДЛЯ ЛУЧШЕГО КАЧЕСТВА (п. 4)
             allowTaint: true, 
             useCORS: true, 
             logging: false,
-            backgroundColor: null 
+            backgroundColor: null // Гарантируем отсутствие лишнего фона
         }).then(canvas => {
             
             // 2. ВОЗВРАЩАЕМ рамку и тень СРАЗУ ПОСЛЕ захвата
