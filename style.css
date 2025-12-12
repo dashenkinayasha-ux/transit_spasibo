@@ -1,4 +1,4 @@
-/* 1. ШРИФТ ДЛЯ ИНТЕРФЕЙСА (Exo 2) */
+/* 3. ШРИФТ ДЛЯ ИНТЕРФЕЙСА (Exo 2) */
 body {
     font-family: 'Exo 2', sans-serif; 
     background-color: #f4f4f9;
@@ -27,7 +27,7 @@ label {
 
 input[type="text"],
 textarea,
-select { /* Стиль для поля выбора шрифта */
+select { 
     width: 100%;
     padding: 10px;
     margin-bottom: 10px;
@@ -67,8 +67,7 @@ button:hover {
     width: 400px;
     height: 400px;
     margin: 20px auto;
-    /* Рамка, которая будет удалена перед скачиванием */
-    border: 2px solid #5cb85c; 
+    /* 1. ИСПРАВЛЕНИЕ: Рамка и тень убраны из основного класса для скачивания */
     border-radius: 10px;
     background-size: cover;
     background-position: center;
@@ -79,27 +78,24 @@ button:hover {
     align-items: center; 
     position: relative;
     overflow: hidden;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2); 
-    /* Шрифт по умолчанию (меняется через JS) */
-    font-family: 'Exo 2', sans-serif;
-    transition: font-family 0.3s;
+    /* Шрифт убран отсюда для корректной смены */
+    transition: all 0.3s;
 }
 
-/* 2. ИСПРАВЛЕНИЕ: Класс для удаления рамки и тени на время скачивания */
-.no-border-shadow {
-    border: none !important;
-    box-shadow: none !important;
+/* 1. ИСПРАВЛЕНИЕ: Класс для добавления рамки и тени, которые будут удалены ПЕРЕД скачиванием */
+.add-border-shadow {
+    border: 2px solid #5cb85c; 
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2); 
 }
 
 .postcard::before {
-    /* Полупрозрачный оверлей */
+    /* Полупрозрачный оверлей для обеспечения читаемости текста */
     content: '';
     position: absolute;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
-    /* ИСПРАВЛЕНИЕ: Менее заметный оверлей для более яркого фона */
     background-color: rgba(255, 255, 255, 0.3); 
     z-index: 1; 
 }
@@ -112,12 +108,13 @@ button:hover {
     padding: 10px;
 }
 
-/* Стили для выводимого текста (используют выбранный шрифт) */
+/* 2. ИСПРАВЛЕНИЕ: Стили для выводимого текста (цвет по умолчанию) */
 .recipient-name-output,
 .gratitude-text-output {
     text-align: center !important; 
     margin: 10px 0;
     font-weight: bold;
+    /* 3. Цвет и шрифт будут установлены через JS */
     color: #1a1a1a; 
     text-shadow: 1px 1px 4px rgba(255, 255, 255, 1); 
     line-height: 1.3;
@@ -137,7 +134,7 @@ button:hover {
 /* СТИЛИ ДЛЯ ВЫБОРА ФОНА */
 .background-selection {
     display: flex;
-    flex-wrap: wrap; /* Позволяет переносить на новую строку */
+    flex-wrap: wrap; 
     gap: 10px;
     margin-bottom: 20px;
     overflow-x: auto;
@@ -154,9 +151,9 @@ button:hover {
     background-size: cover;
     background-position: center;
     transition: border-color 0.2s;
-    flex-shrink: 0; /* Чтобы не сжимались при наличии скролла */
+    flex-shrink: 0; 
 }
 
 .bg-option.selected {
-    border-color: #5cb85c; /* Зеленая рамка для выбранного фона */
+    border-color: #5cb85c; 
 }
