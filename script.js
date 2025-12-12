@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let selectedBackground = ''; 
 
     // Константы для размеров
-    const FINAL_SIZE = 1800;  // *** ИЗМЕНЕНО: Целевой размер открытки (1800x1800 px) ***
+    const FINAL_SIZE = 1800;  // Целевой размер открытки (1800x1800 px)
     const DESKTOP_PREVIEW_SIZE = 400; // Базовый размер для расчета масштаба
 
     // БАЗОВЫЕ РАЗМЕРЫ ШРИФТА (из CSS)
@@ -33,7 +33,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const backgroundImages = [
         { id: 'bg1', url: 'backgrounds/bg1.png' }, 
         { id: 'bg2', url: 'backgrounds/bg2.png' }, 
-        { id: 'bg3', url: 'backgrounds/bg3.png' }
+        { id: 'bg3', url: 'backgrounds/bg3.png' } 
     ];
     
     const textElements = [outputName, outputText];
@@ -176,14 +176,14 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // =======================================================
-    // ЛОГИКА СКАЧИВАНИЯ (Обновленный код)
+    // ЛОГИКА СКАЧИВАНИЯ (Исправлено центрирование)
     // =======================================================
     downloadButton.addEventListener('click', () => {
         // РЕК. 2: Индикатор загрузки
         downloadButton.textContent = 'Генерация...';
         downloadButton.disabled = true;
         
-        const scale = FINAL_SIZE / DESKTOP_PREVIEW_SIZE; // 1800 / 400 = 4.5
+        const scale = FINAL_SIZE / DESKTOP_PREVIEW_SIZE; 
         
         // Создаем временный контейнер с фиксированными размерами
         const tempContainer = document.createElement('div');
@@ -221,7 +221,7 @@ document.addEventListener('DOMContentLoaded', () => {
         textWrapper.style.cssText = `
             width: 90%; 
             position: relative;
-            text-align: center;
+            text-align: center; 
         `;
         
         const nameClone = outputName.cloneNode(true);
@@ -230,6 +230,10 @@ document.addEventListener('DOMContentLoaded', () => {
         // Масштабируем шрифты
         nameClone.style.fontSize = `${FONT_SIZE_NAME * scale}px`;
         textClone.style.fontSize = `${FONT_SIZE_TEXT * scale}px`;
+        
+        // *** ИСПРАВЛЕНИЕ: Принудительное центрирование текста с помощью inline-стиля ***
+        nameClone.style.textAlign = 'center';
+        textClone.style.textAlign = 'center';
         
         // Добавляем в DOM
         textWrapper.appendChild(nameClone);
