@@ -60,14 +60,33 @@ button:hover {
     background-color: #4cae4c;
 }
 
-/* Стили для Колорпикера */
+/* 2. ИСПРАВЛЕНИЕ: Стили для Колорпикера */
 .color-picker-input {
     height: 40px; 
     width: 100%;
     padding: 0;
     margin-bottom: 20px;
-    border: none;
+    border: 1px solid #ccc; /* Добавляем рамку */
+    border-radius: 5px; /* Убираем овальность */
     cursor: pointer;
+    background: transparent;
+    /* Скрываем нативный control, чтобы остался только input */
+    appearance: none; 
+    -moz-appearance: none;
+    -webkit-appearance: none;
+}
+
+/* Дополнительные стили для поля color, чтобы оно выглядело как квадратный образец */
+.color-picker-input::-webkit-color-swatch-wrapper {
+    padding: 0;
+}
+.color-picker-input::-webkit-color-swatch {
+    border: none;
+    border-radius: 5px;
+}
+.color-picker-input::-moz-color-swatch {
+    border: none;
+    border-radius: 5px;
 }
 
 
@@ -78,6 +97,7 @@ button:hover {
 }
 
 .postcard {
+    /* Основные размеры для превью */
     width: 400px;
     height: 400px; 
     
@@ -152,4 +172,28 @@ button:hover {
 
 .bg-option.selected {
     border-color: #5cb85c; 
+}
+
+/* ======================================================= */
+/* МОБИЛЬНАЯ АДАПТАЦИЯ (Исправление №1) */
+/* ======================================================= */
+@media (max-width: 650px) {
+    
+    .container {
+        padding: 15px; /* Уменьшаем padding контейнера */
+        box-shadow: none; /* Убираем тень на маленьких экранах */
+    }
+    
+    #card-preview {
+        margin-top: 20px;
+    }
+
+    .postcard {
+        /* Делаем открытку отзывчивой, чтобы она помещалась в контейнер */
+        width: 100%; 
+        max-width: 300px; /* Ограничиваем максимальный размер для читаемости */
+        height: 300px; 
+        margin-left: auto;
+        margin-right: auto;
+    }
 }
