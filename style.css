@@ -44,6 +44,16 @@ textarea {
     min-height: 100px;
 }
 
+/* СЧЕТЧИК СИМВОЛОВ */
+#char-count {
+    display: block;
+    text-align: right;
+    margin-top: -10px;
+    margin-bottom: 10px;
+    font-size: 0.9em;
+    color: #666;
+}
+
 button {
     background-color: #5cb85c;
     color: white;
@@ -59,6 +69,16 @@ button {
 button:hover {
     background-color: #4cae4c;
 }
+
+/* Стили для кнопки Очистить форму (Рек. 5) */
+#reset-form {
+    background-color: #f0ad4e;
+    margin-left: 10px;
+}
+#reset-form:hover {
+    background-color: #ec971f;
+}
+
 
 /* Стили для Колорпикера */
 .color-picker-input {
@@ -85,6 +105,17 @@ button:hover {
 .color-picker-input::-moz-color-swatch {
     border: none;
     border-radius: 5px;
+}
+
+/* РЕК. 4: Улучшение выбора шрифтов */
+select#font-select option[value*="Exo"] {
+    font-family: 'Exo 2', sans-serif;
+}
+select#font-select option[value*="Montserrat"] {
+    font-family: 'Montserrat', sans-serif;
+}
+select#font-select option[value*="Playfair"] {
+    font-family: 'Playfair Display', serif;
 }
 
 
@@ -173,7 +204,7 @@ button:hover {
 }
 
 /* ======================================================= */
-/* МОБИЛЬНАЯ АДАПТАЦИЯ (Исправление обрезки) */
+/* МОБИЛЬНАЯ АДАПТАЦИЯ (Исправлено Рек. 6) */
 /* ======================================================= */
 @media (max-width: 650px) {
     
@@ -183,26 +214,49 @@ button:hover {
     }
 
     .postcard {
-        /* *** ИСПРАВЛЕНИЕ: Гарантируем квадратную форму с помощью aspect-ratio *** */
         width: 90%; 
         height: auto; 
         aspect-ratio: 1 / 1; 
         max-width: 400px;
         margin: 20px auto;
         
-        /* Возвращаемся к надежному flex-центрированию */
         display: flex;
         flex-direction: column;
         justify-content: center; 
         align-items: center; 
-        padding: 15px; /* Немного уменьшаем отступы на маленьких экранах */
+        padding: 15px;
     }
 
-    /* Возвращаем относительное позиционирование, т.к. родитель - flex */
     .card-text-content {
-        position: static;
-        transform: none;
-        width: 100%; /* Занимает всю доступную ширину */
-        padding: 0;
+        /* РЕК. 6: Восстановлено надежное позиционирование */
+        position: relative; 
+        z-index: 2;
+        transform: none; 
+        top: auto;
+        left: auto;
+        width: 100%;
+        height: auto;
+    }
+    
+    button {
+        /* Кнопки на полную ширину на мобильном */
+        width: 100%;
+        margin-left: 0;
+        margin-bottom: 5px;
+    }
+    
+    /* Дополнительный сброс для размещения кнопок в ряд на мобильном */
+    #reset-form {
+        margin-top: 5px;
+        margin-left: 0;
+    }
+    
+    /* Чтобы кнопки не занимали всю ширину, если их несколько, используем flex для form */
+    #card-form button {
+        width: auto;
+    }
+    #card-form {
+        display: flex;
+        flex-wrap: wrap;
     }
 }
