@@ -12,8 +12,8 @@ document.addEventListener('DOMContentLoaded', () => {
     let selectedBackground = ''; 
 
     // Константы для размеров и масштабирования
-    const PREVIEW_SIZE = 400; // Размер открытки в превью (CSS)
-    const FINAL_SIZE = 1500;  // *** ИЗМЕНЕНО: Целевой размер открытки при скачивании (1500x1500) ***
+    const PREVIEW_SIZE = 400; // Размер открытки в превью (CSS - для десктопа)
+    const FINAL_SIZE = 1500;  // Целевой размер открытки при скачивании
     const SCALE_FACTOR = FINAL_SIZE / PREVIEW_SIZE; // Коэффициент масштабирования (1500/400 = 3.75)
 
     // БАЗОВЫЕ РАЗМЕРЫ ШРИФТА (из CSS)
@@ -95,7 +95,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // =======================================================
-    // ЛОГИКА СКАЧИВАНИЯ (Оптимизация размера + качество текста)
+    // ЛОГИКА СКАЧИВАНИЯ
     // =======================================================
     downloadButton.addEventListener('click', () => {
         downloadButton.style.display = 'none'; 
@@ -110,7 +110,6 @@ document.addEventListener('DOMContentLoaded', () => {
         // 2. ВРЕМЕННО УВЕЛИЧИВАЕМ размер элемента (для фона) И шрифт (для текста)
         cardOutput.style.width = `${FINAL_SIZE}px`;
         cardOutput.style.height = `${FINAL_SIZE}px`;
-        // Пропорциональный padding (используем PREVIEW_SIZE * 0.05 как базовый padding в px из CSS)
         cardOutput.style.padding = `${PREVIEW_SIZE * 0.05 * SCALE_FACTOR}px`; 
         
         // Увеличение размера шрифта для сохранения масштаба
@@ -121,7 +120,7 @@ document.addEventListener('DOMContentLoaded', () => {
         cardOutput.classList.remove('add-border-shadow');
         
         html2canvas(cardOutput, {
-            scale: 1, // Масштаб 1, т.к. мы уже увеличили физические размеры
+            scale: 1, 
             allowTaint: true, 
             useCORS: true, 
             logging: false,
