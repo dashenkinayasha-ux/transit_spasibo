@@ -5,13 +5,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const outputText = document.getElementById('output-text');
     const downloadButton = document.getElementById('download-button');
 
-    // !!! ВАЖНО: Добавлен слеш в начале пути (/) для корректной работы на GitHub Pages (п. 7) !!!
+    // !!! ПУТИ ИСПРАВЛЕНЫ: убран / для корректной работы на GitHub Pages !!!
     const backgroundImages = [
-        '/backgrounds/bg1.png', 
-        '/backgrounds/bg2.png', 
-        '/backgrounds/bg3.png',
-        '/backgrounds/bg4.png' 
-        // Убедитесь, что все ваши файлы перечислены здесь!
+        'backgrounds/bg1.png', 
+        'backgrounds/bg2.png', 
+        'backgrounds/bg3.png'
+        // Добавьте все ваши фоны сюда
     ];
 
     /**
@@ -20,31 +19,31 @@ document.addEventListener('DOMContentLoaded', () => {
      */
     function getRandomBackground() {
         if (backgroundImages.length === 0) {
-            console.error("Нет доступных фоновых изображений.");
+            console.warn("В массиве backgroundImages нет фонов.");
             return '';
         }
         const randomIndex = Math.floor(Math.random() * backgroundImages.length);
         return backgroundImages[randomIndex];
     }
 
-    // Обработчик отправки формы (п. 1, 2, 5)
+    // Обработчик отправки формы
     cardForm.addEventListener('submit', (e) => {
-        e.preventDefault(); // Предотвращаем стандартную отправку формы
+        e.preventDefault(); 
 
         const recipientName = document.getElementById('recipient-name').value;
         const gratitudeText = document.getElementById('gratitude-text').value;
 
-        // 1. Обновляем текст открытки (п. 1, 2)
-        // Используем 'trim()' для удаления лишних пробелов, 
-        // и заменяем текст по умолчанию на введенные данные.
+        // Обновляем текст открытки
+        // Используем 'trim()' для удаления лишних пробелов,
+        // и если поле пустое, оставляем текст по умолчанию.
         outputName.textContent = recipientName.trim() || 'Имя получателя';
         outputText.textContent = gratitudeText.trim() || 'Текст благодарности';
         
-        // 2. Устанавливаем случайный фон
+        // Устанавливаем случайный фон
         const randomBg = getRandomBackground();
         cardOutput.style.backgroundImage = `url(${randomBg})`;
 
-        // 3. Показываем кнопку скачивания
+        // Показываем кнопку скачивания
         downloadButton.style.display = 'block';
     });
 
@@ -55,15 +54,18 @@ document.addEventListener('DOMContentLoaded', () => {
         // Генерируем изображение из HTML элемента
         html2canvas(cardOutput, {
             scale: 2, 
-            allowTaint: true, // Разрешаем использование изображений (важно для фонов)
-            useCORS: true, // Используем CORS для загрузки фонов, если они с другого домена (хотя на GP не обязательно)
+            allowTaint: true, 
+            useCORS: true, 
             logging: false
         }).then(canvas => {
             const imageURL = canvas.toDataURL("image/png"); 
             const link = document.createElement('a');
             
             link.href = imageURL;
-            link.download = `spasibo_${outputName.textContent.toLowerCase().replace(/\s/g, '_')}_${Date.now()}.png`; // Удобное имя файла
+            // Создаем имя файла, используя имя получателя
+            const fileName = outputName.textContent.toLowerCase().replace(/\s/g, '_').substring(0, 20);
+            link.download = `spasibo_${fileName || 'karta'}_${Date.now()}.png`; 
+            
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
@@ -71,7 +73,7 @@ document.addEventListener('DOMContentLoaded', () => {
             downloadButton.style.display = 'block'; // Снова показываем кнопку
         }).catch(err => {
             console.error('Ошибка при генерации изображения:', err);
-            alert('Не удалось сгенерировать открытку. Проверьте консоль для деталей.');
+            alert('Не удалось сгенерировать открытку. Убедитесь, что фоновые изображения доступны.');
             downloadButton.style.display = 'block';
         });
     });
@@ -80,4 +82,3 @@ document.addEventListener('DOMContentLoaded', () => {
     cardOutput.style.backgroundImage = `url(${getRandomBackground()})`;
     downloadButton.style.display = 'none';
 });
-
