@@ -3,36 +3,39 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Конструктор Благодарности</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Скажи "Спасибо!" коллеге</title>
+    <link rel="stylesheet" href="/style.css"> 
 </head>
 <body>
 
     <div class="container">
-        <h1>✨ Конструктор Благодарности</h1>
+        <h1>✨ Скажи "Спасибо!" коллеге</h1>
 
         <form id="card-form">
             <label for="recipient-name">Имя получателя:</label>
             <input type="text" id="recipient-name" required placeholder="Например: Иван Иванович">
 
             <label for="gratitude-text">Текст благодарности:</label>
-            <textarea id="gratitude-text" required placeholder="Напишите, за что вы благодарны..."></textarea>
+            <textarea id="gratitude-text" required placeholder="Напишите, за что вы признательны и благодарны..."></textarea>
 
             <button type="submit">Сгенерировать Открытку</button>
         </form>
 
         <div id="card-preview">
             <h2>Предварительный просмотр</h2>
+            
             <div id="card-output" class="postcard">
-                <p class="to-text">Дорогой(ая) <span id="output-name">[Имя]</span>,</p>
-                <p id="output-text">[Текст благодарности]</p>
-                <p class="from-text">С благодарностью,</p>
+                <div class="card-text-content">
+                    <p id="output-name" class="recipient-name-output">Имя</p>
+                    <p id="output-text" class="gratitude-text-output">Текст благодарности</p>
+                </div>
             </div>
             
-            <button id="download-button" style="display: none;">Скачать Открытку</button>
+            <button id="download-button" style="display: none;">Скачать Открытку (.PNG)</button>
         </div>
     </div>
 
-    <script src="script.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="/script.js"></script>
 </body>
 </html>
