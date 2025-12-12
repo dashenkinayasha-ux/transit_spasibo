@@ -31,12 +31,9 @@
                 <option value="'Playfair Display', serif">Playfair Display (Элегантный)</option>
             </select>
             
-            <label for="color-select">Цвет шрифта:</label>
-            <select id="color-select">
-                <option value="#1a1a1a">Черный (Dark)</option>
-                <option value="#5cb85c">Зеленый (Accent)</option>
-                <option value="#ffffff">Белый (Light)</option>
-            </select>
+            <label>Цвет шрифта:</label>
+            <div id="color-palette" class="color-palette-selection">
+                </div>
             
             <label>Выбор шаблона фона:</label>
             <div id="background-selection" class="background-selection">
@@ -50,7 +47,7 @@
             
             <div id="card-output" class="postcard">
                 <div class="card-text-content">
-                    <p id="output-name" class="recipient-name-output">Имя</p>
+                    <p id="output-name" class="recipient-name-output">Имя</p> 
                     <p id="output-text" class="gratitude-text-output">Текст благодарности</p>
                 </div>
             </div>
