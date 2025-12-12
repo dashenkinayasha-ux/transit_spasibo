@@ -25,6 +25,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Константы для размеров
     const FINAL_SIZE = 1800;  // Целевой размер открытки (1800x1800 px)
     const DESKTOP_PREVIEW_SIZE = 400; // Базовый размер для расчета масштаба
+    const FINAL_PADDING = FINAL_SIZE * 0.05; // 5% от размера для отступов
 
     // БАЗОВЫЕ РАЗМЕРЫ ШРИФТА (из CSS)
     const FONT_SIZE_NAME = 24;
@@ -33,7 +34,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const backgroundImages = [
         { id: 'bg1', url: 'backgrounds/bg1.png' }, 
         { id: 'bg2', url: 'backgrounds/bg2.png' }, 
-        { id: 'bg3', url: 'backgrounds/bg3.png' } 
+        { id: 'bg3', url: 'backgrounds/bg3.png' }
     ];
     
     const textElements = [outputName, outputText];
@@ -176,7 +177,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // =======================================================
-    // ЛОГИКА СКАЧИВАНИЯ (Исправлено центрирование)
+    // ЛОГИКА СКАЧИВАНИЯ (Исправлено центрирование и обрезание)
     // =======================================================
     downloadButton.addEventListener('click', () => {
         // РЕК. 2: Индикатор загрузки
@@ -198,7 +199,8 @@ document.addEventListener('DOMContentLoaded', () => {
              // Fallback
              backgroundStyle += `background-color: #f4f4f9;`;
         }
-
+        
+        // *** ИСПРАВЛЕНИЕ 1: Убираем паддинг с tempContainer и добавляем box-sizing: border-box ***
         tempContainer.style.cssText = `
             position: fixed;
             top: -9999px;
@@ -208,20 +210,24 @@ document.addEventListener('DOMContentLoaded', () => {
             background-size: cover;
             background-position: center;
             ${backgroundStyle}
-            padding: ${FINAL_SIZE * 0.05}px; /* 5% padding */
             display: flex;
             align-items: center;
             justify-content: center;
             text-align: center;
             font-family: ${getComputedStyle(cardTextContent).fontFamily};
+            box-sizing: border-box; /* Гарантирует, что размер остается 1800x1800 */
         `;
         
         // Копируем текст
         const textWrapper = document.createElement('div');
+        // *** ИСПРАВЛЕНИЕ 2: Устанавливаем width: 100% и добавляем паддинг сюда ***
         textWrapper.style.cssText = `
-            width: 90%; 
+            width: 100%; 
+            height: 100%;
             position: relative;
-            text-align: center; 
+            text-align: center;
+            padding: ${FINAL_PADDING}px; /* Переносим паддинг сюда */
+            box-sizing: border-box; 
         `;
         
         const nameClone = outputName.cloneNode(true);
@@ -231,7 +237,7 @@ document.addEventListener('DOMContentLoaded', () => {
         nameClone.style.fontSize = `${FONT_SIZE_NAME * scale}px`;
         textClone.style.fontSize = `${FONT_SIZE_TEXT * scale}px`;
         
-        // *** ИСПРАВЛЕНИЕ: Принудительное центрирование текста с помощью inline-стиля ***
+        // Принудительное центрирование текста
         nameClone.style.textAlign = 'center';
         textClone.style.textAlign = 'center';
         
@@ -243,57 +249,4 @@ document.addEventListener('DOMContentLoaded', () => {
         
         // Генерируем изображение
         html2canvas(tempContainer, {
-            width: FINAL_SIZE,
-            height: FINAL_SIZE,
-            scale: 1,
-            useCORS: true,
-            backgroundColor: null
-        }).then(canvas => {
-            const imageURL = canvas.toDataURL("image/png"); 
-            const link = document.createElement('a');
-            
-            link.href = imageURL;
-            const fileName = outputName.textContent.toLowerCase().replace(/\s/g, '_').substring(0, 20);
-            link.download = `spasibo_${fileName || 'karta'}_${Date.now()}.png`; 
-            
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            
-            // Очистка и сброс индикатора
-            document.body.removeChild(tempContainer);
-            downloadButton.textContent = 'Скачать открытку';
-            downloadButton.disabled = false;
-        }).catch(err => {
-            console.error('Ошибка при генерации изображения:', err);
-            
-            // Очистка и сброс индикатора
-            if (document.body.contains(tempContainer)) {
-                document.body.removeChild(tempContainer);
-            }
-            downloadButton.textContent = 'Скачать открытку';
-            downloadButton.disabled = false;
-        });
-    });
-
-    // Инициализация при загрузке страницы
-    setupBackgroundSelection();
-    
-    // Применяем стили по умолчанию
-    cardOutput.classList.add('add-border-shadow'); 
-    cardTextContent.style.fontFamily = fontSelect.value;
-    
-    // Установка размеров шрифта по умолчанию (для превью)
-    outputName.style.fontSize = `${FONT_SIZE_NAME}px`;
-    outputText.style.fontSize = `${FONT_SIZE_TEXT}px`;
-    
-    // Применяем цвет по умолчанию из колорпикера
-    textElements.forEach(el => {
-        el.style.color = colorPicker.value;
-    });
-    
-    // Инициализация счетчика
-    charCount.textContent = `${gratitudeTextarea.value.length}/${gratitudeTextarea.maxLength}`;
-    
-    downloadButton.style.display = 'none';
-});
+            width: FINAL
