@@ -7,14 +7,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const downloadButton = document.getElementById('download-button');
     const fontSelect = document.getElementById('font-select');
     const backgroundSelection = document.getElementById('background-selection');
-    const colorPicker = document.getElementById('color-picker'); // 4. Колорпикер
+    const colorPicker = document.getElementById('color-picker'); 
     
     let selectedBackground = ''; 
 
     const backgroundImages = [
         { id: 'bg1', url: 'backgrounds/bg1.png' }, 
         { id: 'bg2', url: 'backgrounds/bg2.png' }, 
-        { id: 'bg3', url: 'backgrounds/bg3.png' }
+        { id: 'bg3', url: 'backgrounds/bg3.png' } 
     ];
     
     const textElements = [outputName, outputText];
@@ -22,14 +22,10 @@ document.addEventListener('DOMContentLoaded', () => {
     // =======================================================
     // ЛОГИКА ВЫБОРА ЦВЕТА (КОЛОРПИКЕР)
     // =======================================================
-    // 3. УДАЛЕНО: старые функции updateTextColor и setupColorPalette
-    
-    // Новая логика для color picker
     colorPicker.addEventListener('input', () => {
         const selectedColor = colorPicker.value;
         textElements.forEach(el => {
             el.style.color = selectedColor;
-            // 3. УДАЛЕНО: Логика text-shadow
         });
     });
 
@@ -68,7 +64,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // =======================================================
-    // ЛОГИКА ВЫБОРА ШРИФТА (п. 1)
+    // ЛОГИКА ВЫБОРА ШРИФТА
     // =======================================================
     fontSelect.addEventListener('change', () => {
         const fontCss = fontSelect.value;
@@ -84,17 +80,14 @@ document.addEventListener('DOMContentLoaded', () => {
         const recipientName = document.getElementById('recipient-name').value;
         const gratitudeText = document.getElementById('gratitude-text').value;
 
-        // 1. ИСПРАВЛЕНИЕ: Регистр имени сохраняется
         outputName.textContent = recipientName.trim() || 'Имя получателя'; 
-        
-        // 2. ИСПРАВЛЕНИЕ: Текст благодарности без курсива
         outputText.textContent = gratitudeText.trim() || 'Текст благодарности'; 
         
         downloadButton.style.display = 'block';
     });
 
     // =======================================================
-    // ЛОГИКА СКАЧИВАНИЯ (п. 5 - Высокое Разрешение)
+    // ЛОГИКА СКАЧИВАНИЯ (МАКСИМАЛЬНОЕ КАЧЕСТВО)
     // =======================================================
     downloadButton.addEventListener('click', () => {
         downloadButton.style.display = 'none'; 
@@ -102,12 +95,11 @@ document.addEventListener('DOMContentLoaded', () => {
         // 1. УДАЛЯЕМ рамку и тень ПЕРЕД захватом
         cardOutput.classList.remove('add-border-shadow');
         
-        // Целевое разрешение 1200x1200. Поскольку превью 400x400,
-        // нам нужен масштаб 1200/400 = 3.
-        const scale = 3; 
+        // Устанавливаем масштаб 5 для результирующего изображения 2000x2000
+        const scale = 5; 
 
         html2canvas(cardOutput, {
-            scale: scale, // 5. Устанавливаем масштаб 3 для разрешения 1200x1200
+            scale: scale, 
             allowTaint: true, 
             useCORS: true, 
             logging: false,
@@ -151,4 +143,3 @@ document.addEventListener('DOMContentLoaded', () => {
     
     downloadButton.style.display = 'none';
 });
-
