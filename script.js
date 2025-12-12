@@ -1,4 +1,12 @@
 document.addEventListener('DOMContentLoaded', () => {
+    // РЕК. 7: Проверка CDN
+    if (typeof html2canvas === 'undefined') {
+        const previewSection = document.getElementById('card-preview');
+        previewSection.innerHTML = '<h2>Ошибка загрузки</h2><p>Не удалось загрузить библиотеку для генерации открытки. Попробуйте обновить страницу.</p>';
+        console.error('html2canvas не загружен!');
+        return; // Останавливаем выполнение скрипта
+    }
+
     const cardForm = document.getElementById('card-form');
     const cardOutput = document.getElementById('card-output');
     const cardTextContent = cardOutput.querySelector('.card-text-content'); 
@@ -8,6 +16,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const fontSelect = document.getElementById('font-select');
     const backgroundSelection = document.getElementById('background-selection');
     const colorPicker = document.getElementById('color-picker'); 
+    const gratitudeTextarea = document.getElementById('gratitude-text'); 
+    const charCount = document.getElementById('char-count'); 
+    const resetButton = document.getElementById('reset-form'); 
     
     let selectedBackground = ''; 
 
@@ -19,42 +30,79 @@ document.addEventListener('DOMContentLoaded', () => {
     const FONT_SIZE_TEXT = 20;
 
     const backgroundImages = [
-        { id: 'bg1', url: 'backgrounds/bg1.png' }, 
+        { id: 'bg1', url: 'backgrounds/bg1.jpg' }, 
         { id: 'bg2', url: 'backgrounds/bg2.png' }, 
-        { id: 'bg3', url: 'backgrounds/bg3.png' }
+        { id: 'bg3', url: 'backgrounds/bg3.jpg' },
+        { id: 'bg4', url: 'backgrounds/bg4.jpg' } 
     ];
     
     const textElements = [outputName, outputText];
 
     // =======================================================
-    // ЛОГИКА ВЫБОРА ЦВЕТА
+    // РЕК. 8: Проверка контраста
     // =======================================================
+    function checkContrast(hexColor) {
+        const rgb = parseInt(hexColor.substring(1), 16);
+        const r = (rgb >> 16) & 0xFF;
+        const g = (rgb >> 8) & 0xFF;
+        const b = rgb & 0xFF;
+        const brightness = (r * 0.299 + g * 0.587 + b * 0.114);
+        
+        // Порог яркости для предупреждения
+        if (brightness > 160) {
+            console.warn('Внимание: Выбран светлый цвет шрифта. Убедитесь, что фон достаточно темный для хорошего контраста.');
+        }
+    }
+
     colorPicker.addEventListener('input', () => {
         const selectedColor = colorPicker.value;
         textElements.forEach(el => {
             el.style.color = selectedColor;
         });
+        checkContrast(selectedColor);
     });
 
     // =======================================================
-    // ЛОГИКА ВЫБОРА ФОНА
+    // РЕК. 3: Счетчик символов
+    // =======================================================
+    gratitudeTextarea.addEventListener('input', () => {
+        charCount.textContent = `${gratitudeTextarea.value.length}/${gratitudeTextarea.maxLength}`;
+    });
+
+    // =======================================================
+    // ЛОГИКА ВЫБОРА ФОНА (Рек. 1)
     // =======================================================
     function setupBackgroundSelection() {
-        if (backgroundImages.length === 0) {
-            console.warn("Нет доступных фоновых изображений.");
-            return;
-        }
+        // РЕК. 1: Fallback-фоны (если нет изображений, или для старта)
+        const allBackgrounds = backgroundImages.length > 0 ? backgroundImages : [
+            { id: 'color1', color: '#f0f0f0' }, 
+            { id: 'color2', color: '#e6f7ff' },
+            { id: 'color3', color: '#ffe6e6' },
+            { id: 'color4', color: '#fff5e6' }
+        ];
 
-        backgroundImages.forEach((bg, index) => {
+        allBackgrounds.forEach((bg, index) => {
             const div = document.createElement('div');
             div.className = 'bg-option';
-            div.dataset.bgUrl = bg.url; 
-            div.style.backgroundImage = `url(${bg.url})`;
+            
+            if (bg.url) {
+                div.dataset.bgUrl = bg.url; 
+                div.style.backgroundImage = `url(${bg.url})`;
+            } else {
+                div.dataset.bgColor = bg.color;
+                div.style.backgroundColor = bg.color;
+            }
             
             if (index === 0) {
                 div.classList.add('selected');
-                selectedBackground = bg.url;
-                cardOutput.style.backgroundImage = `url(${bg.url})`;
+                selectedBackground = bg.url || ('color:' + bg.color);
+                if (bg.url) {
+                    cardOutput.style.backgroundImage = `url(${bg.url})`;
+                    cardOutput.style.backgroundColor = '';
+                } else {
+                    cardOutput.style.backgroundColor = bg.color;
+                    cardOutput.style.backgroundImage = 'none';
+                }
             }
             
             div.addEventListener('click', () => {
@@ -62,8 +110,16 @@ document.addEventListener('DOMContentLoaded', () => {
                     opt.classList.remove('selected');
                 });
                 div.classList.add('selected');
-                selectedBackground = bg.url;
-                cardOutput.style.backgroundImage = `url(${bg.url})`;
+
+                if (div.dataset.bgUrl) {
+                    selectedBackground = div.dataset.bgUrl;
+                    cardOutput.style.backgroundImage = `url(${div.dataset.bgUrl})`;
+                    cardOutput.style.backgroundColor = '';
+                } else {
+                    selectedBackground = 'color:' + div.dataset.bgColor;
+                    cardOutput.style.backgroundImage = 'none';
+                    cardOutput.style.backgroundColor = div.dataset.bgColor;
+                }
             });
             backgroundSelection.appendChild(div);
         });
@@ -93,16 +149,47 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // =======================================================
-    // ЛОГИКА СКАЧИВАНИЯ (Исправление динамического размера и масштаба)
+    // РЕК. 5: Сброс формы
+    // =======================================================
+    resetButton.addEventListener('click', () => {
+        cardForm.reset();
+        
+        outputName.textContent = 'Имя';
+        outputText.textContent = 'Текст благодарности';
+        downloadButton.style.display = 'none';
+        
+        // Сброс стилей
+        cardTextContent.style.fontFamily = fontSelect.options[0].value;
+        colorPicker.value = '#1a1a1a';
+        textElements.forEach(el => {
+            el.style.color = '#1a1a1a';
+        });
+        
+        // Сброс фона
+        const firstOption = document.querySelector('.bg-option');
+        if (firstOption) {
+            document.querySelectorAll('.bg-option').forEach(opt => opt.classList.remove('selected'));
+            firstOption.classList.add('selected');
+            firstOption.click(); 
+        }
+        
+        // Сброс счетчика
+        charCount.textContent = `0/${gratitudeTextarea.maxLength}`;
+    });
+
+    // =======================================================
+    // ЛОГИКА СКАЧИВАНИЯ (Рек. 2)
     // =======================================================
     downloadButton.addEventListener('click', () => {
-        downloadButton.style.display = 'none'; 
+        // РЕК. 2: Индикатор загрузки
+        downloadButton.textContent = 'Генерация...';
+        downloadButton.disabled = true;
         
-        // 1. Динамически получаем текущий размер превью. 
         const PREVIEW_SIZE = cardOutput.clientWidth; 
         if (PREVIEW_SIZE === 0) {
             alert('Ошибка: Открытка невидима или имеет нулевой размер.');
-            downloadButton.style.display = 'block';
+            downloadButton.textContent = 'Скачать открытку';
+            downloadButton.disabled = false;
             return;
         }
         
@@ -115,18 +202,13 @@ document.addEventListener('DOMContentLoaded', () => {
         const originalNameFontSize = outputName.style.fontSize;
         const originalTextFontSize = outputText.style.fontSize;
         
-        // В CSS у нас есть padding: 20px для десктопа. 
-        // 20px / 400px (desktop size) = 0.05
         const DESKTOP_PADDING_RATIO = 0.05;
 
         // 2. ВРЕМЕННО УВЕЛИЧИВАЕМ размер элемента (для фона) И шрифт (для текста)
         cardOutput.style.width = `${FINAL_SIZE}px`;
         cardOutput.style.height = `${FINAL_SIZE}px`; 
-        
-        // Устанавливаем новый padding: 5% от нового размера (2000 * 0.05 = 100px)
         cardOutput.style.padding = `${FINAL_SIZE * DESKTOP_PADDING_RATIO}px`; 
 
-        // Увеличение размера шрифта для сохранения масштаба
         outputName.style.fontSize = `${FONT_SIZE_NAME * SCALE_FACTOR}px`;
         outputText.style.fontSize = `${FONT_SIZE_TEXT * SCALE_FACTOR}px`;
 
@@ -134,7 +216,7 @@ document.addEventListener('DOMContentLoaded', () => {
         cardOutput.classList.remove('add-border-shadow');
         
         html2canvas(cardOutput, {
-            scale: 1, // Масштаб 1, т.к. мы уже увеличили физические размеры
+            scale: 1, 
             allowTaint: true, 
             useCORS: true, 
             logging: false,
@@ -160,7 +242,9 @@ document.addEventListener('DOMContentLoaded', () => {
             link.click();
             document.body.removeChild(link);
             
-            downloadButton.style.display = 'block'; 
+            // РЕК. 2: Сброс индикатора
+            downloadButton.textContent = 'Скачать открытку';
+            downloadButton.disabled = false;
         }).catch(err => {
             console.error('Ошибка при генерации изображения:', err);
             // Возвращаем оригинальные стили, даже если ошибка
@@ -170,7 +254,10 @@ document.addEventListener('DOMContentLoaded', () => {
             outputName.style.fontSize = originalNameFontSize; 
             outputText.style.fontSize = originalTextFontSize;
             cardOutput.classList.add('add-border-shadow'); 
-            downloadButton.style.display = 'block';
+            
+            // РЕК. 2: Сброс индикатора
+            downloadButton.textContent = 'Скачать открытку';
+            downloadButton.disabled = false;
         });
     });
 
@@ -189,6 +276,9 @@ document.addEventListener('DOMContentLoaded', () => {
     textElements.forEach(el => {
         el.style.color = colorPicker.value;
     });
+    
+    // Инициализация счетчика
+    charCount.textContent = `${gratitudeTextarea.value.length}/${gratitudeTextarea.maxLength}`;
     
     downloadButton.style.display = 'none';
 });
