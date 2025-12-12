@@ -56,6 +56,18 @@ button:hover {
     background-color: #4cae4c;
 }
 
+/* 4. Стили для Колорпикера */
+.color-picker-input {
+    /* Чтобы не выглядел как обычное поле input */
+    height: 40px; 
+    width: 100%;
+    padding: 0;
+    margin-bottom: 20px;
+    border: none;
+    cursor: pointer;
+}
+
+
 /* Открытка - Квадратный формат и стили */
 #card-preview {
     margin-top: 30px;
@@ -63,8 +75,10 @@ button:hover {
 }
 
 .postcard {
+    /* 5. Устанавливаем целевое разрешение для скачивания */
     width: 400px;
-    height: 400px;
+    height: 400px; 
+    
     margin: 20px auto;
     border-radius: 10px;
     background-size: cover;
@@ -91,55 +105,29 @@ button:hover {
     text-align: center;
     width: 90%; 
     padding: 10px;
-    font-family: 'Exo 2', sans-serif; /* Базовый шрифт для наследования */
+    font-family: 'Exo 2', sans-serif; 
 }
 
-/* Стили для выводимого текста (цвет и тень устанавливаются через JS) */
+/* Стили для выводимого текста */
 .recipient-name-output,
 .gratitude-text-output {
     text-align: center !important; 
     margin: 10px 0;
     font-weight: bold;
+    /* 3. УДАЛЕНО: text-shadow (эффект свечения) */
     line-height: 1.3;
-    /* ! Важно: не указываем font-family здесь, чтобы наследовался от .card-text-content */
+    color: #1a1a1a; /* Цвет по умолчанию */
 }
 
 .recipient-name-output {
     font-size: 24px;
-    text-transform: uppercase;
+    /* 1. ИСПРАВЛЕНИЕ: Удален text-transform: uppercase */
 }
 
 .gratitude-text-output {
     font-size: 20px;
-    font-style: italic;
+    /* 2. ИСПРАВЛЕНИЕ: Удален font-style: italic */
     white-space: pre-wrap; 
-}
-
-/* СТИЛИ ДЛЯ ПАЛИТРЫ ЦВЕТОВ */
-.color-palette-selection {
-    display: flex;
-    gap: 15px;
-    margin: 10px 0 20px 0;
-    flex-wrap: wrap; 
-}
-
-.color-option {
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
-    cursor: pointer;
-    border: 2px solid #ccc; 
-    transition: transform 0.2s, border-color 0.2s;
-}
-
-.color-option:hover {
-    transform: scale(1.1);
-}
-
-.color-option.selected {
-    border-color: #5cb85c; 
-    border-width: 4px; 
-    transform: scale(1.1);
 }
 
 /* СТИЛИ ДЛЯ ВЫБОРА ФОНА */
