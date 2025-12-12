@@ -13,18 +13,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Константы для размеров и масштабирования
     const PREVIEW_SIZE = 400; // Размер открытки в превью (CSS)
-    const FINAL_SIZE = 2000;  // Целевой размер открытки при скачивании
-    const SCALE_FACTOR = FINAL_SIZE / PREVIEW_SIZE; // Коэффициент масштабирования (2000/400 = 5)
+    const FINAL_SIZE = 1500;  // *** ИЗМЕНЕНО: Целевой размер открытки при скачивании (1500x1500) ***
+    const SCALE_FACTOR = FINAL_SIZE / PREVIEW_SIZE; // Коэффициент масштабирования (1500/400 = 3.75)
 
     // БАЗОВЫЕ РАЗМЕРЫ ШРИФТА (из CSS)
     const FONT_SIZE_NAME = 24;
     const FONT_SIZE_TEXT = 20;
 
     const backgroundImages = [
-        { id: 'bg1', url: 'backgrounds/bg1.jpg' }, 
+        { id: 'bg1', url: 'backgrounds/bg1.png' }, 
         { id: 'bg2', url: 'backgrounds/bg2.png' }, 
-        { id: 'bg3', url: 'backgrounds/bg3.jpg' },
-        { id: 'bg4', url: 'backgrounds/bg4.jpg' } 
+        { id: 'bg3', url: 'backgrounds/bg3.png' }
     ];
     
     const textElements = [outputName, outputText];
@@ -96,7 +95,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // =======================================================
-    // ЛОГИКА СКАЧИВАНИЯ (Исправление масштаба текста)
+    // ЛОГИКА СКАЧИВАНИЯ (Оптимизация размера + качество текста)
     // =======================================================
     downloadButton.addEventListener('click', () => {
         downloadButton.style.display = 'none'; 
@@ -111,9 +110,10 @@ document.addEventListener('DOMContentLoaded', () => {
         // 2. ВРЕМЕННО УВЕЛИЧИВАЕМ размер элемента (для фона) И шрифт (для текста)
         cardOutput.style.width = `${FINAL_SIZE}px`;
         cardOutput.style.height = `${FINAL_SIZE}px`;
-        cardOutput.style.padding = `${PREVIEW_SIZE * 0.05 * SCALE_FACTOR}px`; // Пропорциональный padding
+        // Пропорциональный padding (используем PREVIEW_SIZE * 0.05 как базовый padding в px из CSS)
+        cardOutput.style.padding = `${PREVIEW_SIZE * 0.05 * SCALE_FACTOR}px`; 
         
-        // КРИТИЧЕСКОЕ ИСПРАВЛЕНИЕ: Увеличение размера шрифта
+        // Увеличение размера шрифта для сохранения масштаба
         outputName.style.fontSize = `${FONT_SIZE_NAME * SCALE_FACTOR}px`;
         outputText.style.fontSize = `${FONT_SIZE_TEXT * SCALE_FACTOR}px`;
 
