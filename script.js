@@ -32,9 +32,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const FONT_SIZE_TEXT = 20;
 
     const backgroundImages = [
-        { id: 'bg1', url: 'backgrounds/bg1.png' }, 
+        { id: 'bg1', url: 'backgrounds/bg1.jpg' }, 
         { id: 'bg2', url: 'backgrounds/bg2.png' }, 
-        { id: 'bg3', url: 'backgrounds/bg3.png' }
+        { id: 'bg3', url: 'backgrounds/bg3.jpg' },
+        { id: 'bg4', url: 'backgrounds/bg4.jpg' } 
     ];
     
     const textElements = [outputName, outputText];
@@ -200,7 +201,7 @@ document.addEventListener('DOMContentLoaded', () => {
              backgroundStyle += `background-color: #f4f4f9;`;
         }
         
-        // *** ИСПРАВЛЕНИЕ 1: Убираем паддинг с tempContainer и добавляем box-sizing: border-box ***
+        // Убрали паддинг с tempContainer и добавили box-sizing: border-box
         tempContainer.style.cssText = `
             position: fixed;
             top: -9999px;
@@ -215,19 +216,23 @@ document.addEventListener('DOMContentLoaded', () => {
             justify-content: center;
             text-align: center;
             font-family: ${getComputedStyle(cardTextContent).fontFamily};
-            box-sizing: border-box; /* Гарантирует, что размер остается 1800x1800 */
+            box-sizing: border-box; 
         `;
         
         // Копируем текст
         const textWrapper = document.createElement('div');
-        // *** ИСПРАВЛЕНИЕ 2: Устанавливаем width: 100% и добавляем паддинг сюда ***
+        // Установили width: 100% и добавили паддинг сюда
         textWrapper.style.cssText = `
             width: 100%; 
             height: 100%;
             position: relative;
             text-align: center;
-            padding: ${FINAL_PADDING}px; /* Переносим паддинг сюда */
+            padding: ${FINAL_PADDING}px; 
             box-sizing: border-box; 
+            display: flex; /* Чтобы текст внутри центрировался вертикально */
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
         `;
         
         const nameClone = outputName.cloneNode(true);
@@ -249,4 +254,57 @@ document.addEventListener('DOMContentLoaded', () => {
         
         // Генерируем изображение
         html2canvas(tempContainer, {
-            width: FINAL
+            width: FINAL_SIZE,
+            height: FINAL_SIZE,
+            scale: 1,
+            useCORS: true,
+            backgroundColor: null
+        }).then(canvas => {
+            const imageURL = canvas.toDataURL("image/png"); 
+            const link = document.createElement('a');
+            
+            link.href = imageURL;
+            const fileName = outputName.textContent.toLowerCase().replace(/\s/g, '_').substring(0, 20);
+            link.download = `spasibo_${fileName || 'karta'}_${Date.now()}.png`; 
+            
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            // Очистка и сброс индикатора
+            document.body.removeChild(tempContainer);
+            downloadButton.textContent = 'Скачать открытку';
+            downloadButton.disabled = false;
+        }).catch(err => {
+            console.error('Ошибка при генерации изображения:', err);
+            
+            // Очистка и сброс индикатора
+            if (document.body.contains(tempContainer)) {
+                document.body.removeChild(tempContainer);
+            }
+            downloadButton.textContent = 'Скачать открытку';
+            downloadButton.disabled = false;
+        });
+    });
+
+    // Инициализация при загрузке страницы
+    setupBackgroundSelection();
+    
+    // Применяем стили по умолчанию
+    cardOutput.classList.add('add-border-shadow'); 
+    cardTextContent.style.fontFamily = fontSelect.value;
+    
+    // Установка размеров шрифта по умолчанию (для превью)
+    outputName.style.fontSize = `${FONT_SIZE_NAME}px`;
+    outputText.style.fontSize = `${FONT_SIZE_TEXT}px`;
+    
+    // Применяем цвет по умолчанию из колорпикера
+    textElements.forEach(el => {
+        el.style.color = colorPicker.value;
+    });
+    
+    // Инициализация счетчика
+    charCount.textContent = `${gratitudeTextarea.value.length}/${gratitudeTextarea.maxLength}`;
+    
+    downloadButton.style.display = 'none';
+});
